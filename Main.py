@@ -1,5 +1,5 @@
 from binance.client import Client
-import configparser
+# import configparser
 import Trade_machine as trade_machine
 from telegram import ChatAction, ReplyKeyboardMarkup, ReplyKeyboardRemove,\
     InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResult
@@ -11,6 +11,8 @@ import os
 
 # Ключи
 bot_token = os.environ['BOT_TOKEN']
+api_key = os.environ['API_KEY']
+secret_key = os.environ['SECRET_KEY']
 
 # Настройка логи
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -19,10 +21,10 @@ logger = logging.getLogger(__name__)
 
 
 # Загрузка ключей из файла config
-config = configparser.ConfigParser()
-config.read_file(open('secret.cfg'))
-api_key = config.get('BINANCE', 'API_KEY')
-secret_key = config.get('BINANCE', 'SECRET_KEY')
+# config = configparser.ConfigParser()
+# config.read_file(open('secret.cfg'))
+# api_key = config.get('BINANCE', 'API_KEY')
+# secret_key = config.get('BINANCE', 'SECRET_KEY')
 client = Client(api_key, secret_key)
 
 machine_name = ''
