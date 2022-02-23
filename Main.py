@@ -11,7 +11,6 @@ import os
 
 # Ключи
 bot_token = os.environ['BOT_TOKEN']
-PORT = int(os.environ.get('PORT', '8443'))
 
 # Настройка логи
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -189,7 +188,6 @@ def main():
     # updater.start_polling(clean=True)
     updater.bot.set_webhook("https://binancemachine.herokuapp.com/" + bot_token)
     updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
                           url_path=bot_token)
     # Останавка бота, если были нажаты Ctrl + C
     updater.idle()
