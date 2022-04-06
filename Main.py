@@ -189,12 +189,12 @@ def main():
 
 
     # Начало поиска обновлений
-    updater.start_polling(clean=True)
-    # updater.start_webhook(listen="0.0.0.0",
-    #                       webhook_url="https://binancemachine.herokuapp.com/" + bot_token,
-    #                       port=PORT,
-    #                       url_path=bot_token)
-    # Останавка бота, если были нажаты Ctrl + C
+    # updater.start_polling(clean=True)
+    updater.start_webhook(listen="0.0.0.0",
+                          webhook_url="https://binancemachine.herokuapp.com/" + bot_token,
+                          port=PORT,
+                          url_path=bot_token)
+    Останавка бота, если были нажаты Ctrl + C
     updater.idle()
 
 
