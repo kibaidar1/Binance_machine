@@ -71,8 +71,10 @@ class TradeMachine:
             if price_increase >= self.profit_percent:
                 sales_list.append(symbol)
                 self.recently_sold_coins.append([symbol, int(time())])
+        return sales_list
 
-    def buy_coins(self, coins):                                                                        # Покупка монет по списку
+    # Покупка монет по списку
+    def buy_coins(self, coins):
         if len(coins) > 2:
             money_to_coin = self.available_money/len(coins)
         else:
@@ -87,11 +89,12 @@ class TradeMachine:
                 except ZeroDivisionError:
                     print([coin, coin_price])
 
-    def sell_coins(self, coins):                                                                        # Продажа монет по списку
+    # Продажа монет по списку
+    def sell_coins(self, coins):
         for coin_to_sell in coins:
             while True:
                 try:
-                    current_price = float(self.client.get_ticker(symbol=coin)["lastPrice"])
+                    current_price = float(self.client.get_ticker(symbol=coin_to_sell)["lastPrice"])
                     break
                 except BinanceAPIException:
                     continue
@@ -101,5 +104,5 @@ class TradeMachine:
                 quantity = available_coin[2]
                 if coin == coin_to_sell:
                     self.available_coins.remove(available_coin)
-        self.available_money += current_price * quantity
+                    self.available_money += current_price * quantity
 

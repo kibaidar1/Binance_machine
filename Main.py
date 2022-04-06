@@ -1,5 +1,4 @@
 from binance.client import Client
-# import configparser
 import Trade_machine as trade_machine
 from telegram import ChatAction, ReplyKeyboardMarkup, ReplyKeyboardRemove,\
     InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResult
@@ -8,8 +7,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,\
 import logging
 import os
 
-
-# Ключи
+# Получение ключей
 bot_token = os.environ['BOT_TOKEN']
 api_key = os.environ['API_KEY']
 secret_key = os.environ['SECRET_KEY']
@@ -20,25 +18,24 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-# Загрузка ключей из файла config
-# config = configparser.ConfigParser()
-# config.read_file(open('secret.cfg'))
-# api_key = config.get('BINANCE', 'API_KEY')
-# secret_key = config.get('BINANCE', 'SECRET_KEY')
 client = Client(api_key, secret_key)
 
-machine_name = ''
-target_percent = 0
-profit_percent = 0
-available_money = 0
-traders = {}
-chat_id = ''
+# Переменные для создания новых машин
+machine_name = ''                   # Название
+target_percent = 0                  # Целевое падение процента (для покупкии)
+profit_percent = 0                  # Целевой рост процента (для продажи)
+available_money = 0                 # Количество доступных денег
 
+# Список действующих машин
+traders = {}
+
+# Id чата с которым ведётся диалог
+chat_id = ''
 # Статусы диалога
 CREATE, NAME, TARGET_PERCENT, PROFIT_PERCENT, MONEY = range(5)
 
 
+# функция команды Start, открывающая меню
 def start_command(update, context):
     keyboard = [[InlineKeyboardButton(text="Создать машину", callback_data="create_machine")]]
     if traders:
@@ -48,12 +45,14 @@ def start_command(update, context):
     update.message.reply_text(text="Привет", reply_markup=reply_markup)
 
 
+# Функция обработки нажатия кнопки "Создать машину", открывается диалог
 def create_machine_button(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id,
                              text='Задайте имя новой машине')
     return NAME
 
 
+#
 def set_name_to_machine(update, context):
     global machine_name
     machine_name = update.message.text
@@ -158,6 +157,8 @@ def sale(context):
         sales_list = traders[key].get_sales_list()
         if sales_list:
             traders[key].sell_coins(sales_list)
+            context.bot.send_message(chat_id=chat_id,
+                                     text=f"{key} говорит надо продавать: {sales_list}")
 
 
 def main():
@@ -188,11 +189,11 @@ def main():
 
 
     # Начало поиска обновлений
-    # updater.start_polling(clean=True)
-    updater.start_webhook(listen="0.0.0.0",
-                          webhook_url="https://binancemachine.herokuapp.com/" + bot_token,
-                          port=PORT,
-                          url_path=bot_token)
+    updater.start_polling(clean=True)
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       webhook_url="https://binancemachine.herokuapp.com/" + bot_token,
+    #                       port=PORT,
+    #                       url_path=bot_token)
     # Останавка бота, если были нажаты Ctrl + C
     updater.idle()
 
