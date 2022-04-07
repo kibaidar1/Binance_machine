@@ -194,7 +194,7 @@ def main():
                           webhook_url="https://binancemachine.herokuapp.com/" + bot_token,
                           port=PORT,
                           url_path=bot_token)
-    Останавка бота, если были нажаты Ctrl + C
+    # Останавка бота, если были нажаты Ctrl + C
     updater.idle()
 
 
