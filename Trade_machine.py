@@ -27,7 +27,7 @@ class TradeMachine:
             try:
                 tickers = self.client.get_ticker()
                 break
-            except BinanceAPIException:
+            except BinanceAPIException or ConnectionError:
                 continue
         coins_list = sorted(tickers, key=lambda k: k["priceChangePercent"])
         for coin in coins_list:
@@ -44,7 +44,7 @@ class TradeMachine:
                                 self.client.get_klines(symbol=coin["symbol"], interval=self.client.KLINE_INTERVAL_30MINUTE,
                                                        limit=10)))
                         break
-                    except BinanceAPIException:
+                    except BinanceAPIException or ConnectionError:
                         continue
                 drop_percent = 0
                 for candle in candles:
@@ -66,7 +66,11 @@ class TradeMachine:
         for coin in self.available_coins:
             symbol = coin[0]
             purchase_price = coin[1]
-            current_price = float(self.client.get_ticker(symbol=coin[0])["lastPrice"])
+            try:
+                current_price = float(self.client.get_ticker(symbol=coin[0])["lastPrice"])
+            except ConnectionError as e:
+                print(e)
+                break
             price_increase = (current_price - purchase_price) / purchase_price * 100
             if price_increase >= self.profit_percent:
                 sales_list.append(symbol)
